@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3004:3004"
+    environment:
+      - PORT=3004
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=agent_marketplace
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  redis:
+    image: redis:7-alpine
+
+volumes:
+  postgres-data:
