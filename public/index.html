@@ -1,27 +1,748 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Marketplace</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1E40AF',
-                        secondary: '#D4AF37'
-                    }
-                }
-            }
-        }
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Million Agent Marketplace | Dollar Double Empire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0a0a0f;--bg2:#0e0e18;--card:#1a1a2e;--card2:#16162a;--green:#00ff88;--cyan:#00d4ff;--purple:#a855f7;
+--white:#ffffff;--gray:#94a3b8;--gray2:#64748b;--gray3:#334155;--border:rgba(255,255,255,0.06);
+--glass:rgba(26,26,46,0.7);--radius:16px;--radius-sm:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--white);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;font-family:inherit}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--green);border-radius:3px}
+
+/* Animations */
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes countUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 2rem;height:70px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:all .3s}
+.nav.scrolled{background:rgba(10,10,15,0.95);box-shadow:0 4px 30px rgba(0,255,136,0.05)}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem}
+.nav-logo .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{font-size:.9rem;font-weight:500;color:var(--gray);transition:color .3s}
+.nav-links a:hover{color:var(--white)}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.btn{padding:10px 24px;border-radius:var(--radius-sm);font-weight:600;font-size:.9rem;transition:all .3s;display:inline-flex;align-items:center;gap:8px}
+.btn-ghost{background:transparent;color:var(--gray);border:1px solid var(--gray3)}
+.btn-ghost:hover{color:var(--white);border-color:var(--gray2);background:rgba(255,255,255,0.03)}
+.btn-primary{background:linear-gradient(135deg,var(--green),#00cc6a);color:#000;font-weight:700;box-shadow:0 4px 20px rgba(0,255,136,0.25)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(0,255,136,0.4)}
+.btn-cyan{background:linear-gradient(135deg,var(--cyan),#0099cc);color:#000;font-weight:700}
+.btn-cyan:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(0,212,255,0.3)}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;padding:5px}
+.hamburger span{width:24px;height:2px;background:var(--white);transition:all .3s}
+
+/* Hero */
+.hero{padding:160px 2rem 100px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(0,255,136,0.06) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(0,212,255,0.04) 0%,transparent 50%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);border-radius:50px;font-size:.85rem;color:var(--green);margin-bottom:2rem;animation:fadeInUp .6s ease}
+.hero-badge .dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+.hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;animation:fadeInUp .6s ease .1s both}
+.gradient-text{background:linear-gradient(135deg,var(--green),var(--cyan),var(--green),var(--cyan));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 4s ease infinite}
+.hero p{font-size:1.2rem;color:var(--gray);max-width:640px;margin:0 auto 2.5rem;animation:fadeInUp .6s ease .2s both}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:fadeInUp .6s ease .3s both}
+.hero-actions .btn{padding:14px 32px;font-size:1rem}
+
+/* Search */
+.search-section{padding:0 2rem;margin-top:-30px;position:relative;z-index:10}
+.search-container{max-width:700px;margin:0 auto;position:relative}
+.search-container input{width:100%;padding:18px 24px 18px 54px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);font-size:1rem;color:var(--white);outline:none;transition:all .3s;font-family:inherit}
+.search-container input::placeholder{color:var(--gray2)}
+.search-container input:focus{border-color:var(--green);box-shadow:0 0 30px rgba(0,255,136,0.1)}
+.search-icon{position:absolute;left:20px;top:50%;transform:translateY(-50%);color:var(--gray2);font-size:1.1rem}
+
+/* Stats */
+.stats{padding:80px 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.stat{text-align:center;animation:countUp .6s ease both}
+.stat-value{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:.9rem;color:var(--gray);margin-top:4px}
+
+/* Section */
+.section{padding:80px 2rem}
+.section-header{text-align:center;margin-bottom:3.5rem}
+.section-header h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:1rem}
+.section-header p{color:var(--gray);max-width:600px;margin:0 auto;font-size:1.05rem}
+.container{max-width:1200px;margin:0 auto}
+
+/* Categories */
+.categories{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:3rem}
+.cat-btn{padding:10px 22px;border-radius:50px;font-size:.85rem;font-weight:600;background:var(--card);color:var(--gray);border:1px solid var(--border);transition:all .3s}
+.cat-btn:hover,.cat-btn.active{background:rgba(0,255,136,0.1);color:var(--green);border-color:rgba(0,255,136,0.3)}
+
+/* Agent Cards */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px}
+.agent-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all .4s;position:relative;overflow:hidden}
+.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--cyan));opacity:0;transition:opacity .3s}
+.agent-card:hover{transform:translateY(-6px);border-color:rgba(0,255,136,0.2);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.agent-card:hover::before{opacity:1}
+.agent-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.agent-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.15)}
+.agent-price{font-size:1.3rem;font-weight:800;color:var(--green)}
+.agent-price span{font-size:.75rem;font-weight:400;color:var(--gray)}
+.agent-card h3{font-size:1.15rem;font-weight:700;margin-bottom:8px}
+.agent-card .desc{color:var(--gray);font-size:.9rem;margin-bottom:16px;line-height:1.5}
+.agent-meta{display:flex;justify-content:space-between;align-items:center}
+.stars{color:#fbbf24;font-size:.9rem;letter-spacing:1px}
+.agent-card .hire-btn{padding:10px 24px;border-radius:var(--radius-sm);font-weight:600;font-size:.85rem;background:linear-gradient(135deg,var(--green),#00cc6a);color:#000;transition:all .3s}
+.agent-card .hire-btn:hover{box-shadow:0 4px 20px rgba(0,255,136,0.3);transform:translateY(-1px)}
+.agent-card.hidden{display:none}
+
+/* How It Works */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem}
+.step{text-align:center;padding:40px 30px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);transition:all .3s;position:relative}
+.step:hover{transform:translateY(-4px);border-color:rgba(0,212,255,0.2)}
+.step-number{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--green));display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#000;margin:0 auto 1.5rem}
+.step h3{font-size:1.2rem;font-weight:700;margin-bottom:.8rem}
+.step p{color:var(--gray);font-size:.95rem}
+.step-connector{display:none}
+
+/* Pricing */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:1000px;margin:0 auto}
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:36px;text-align:center;transition:all .3s;position:relative}
+.price-card.featured{border-color:var(--green);box-shadow:0 0 60px rgba(0,255,136,0.08)}
+.price-card.featured::before{content:'MOST POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--green),var(--cyan));color:#000;font-size:.7rem;font-weight:800;padding:5px 16px;border-radius:50px;letter-spacing:1px}
+.price-card:hover{transform:translateY(-4px)}
+.price-card h3{font-size:1.2rem;font-weight:700;margin-bottom:.5rem}
+.price-card .price{font-size:3rem;font-weight:900;margin:1.2rem 0;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.price-card .price span{font-size:1rem;font-weight:400}
+.price-card .price-desc{color:var(--gray);font-size:.9rem;margin-bottom:1.5rem}
+.price-features{list-style:none;text-align:left;margin-bottom:2rem}
+.price-features li{padding:8px 0;font-size:.9rem;color:var(--gray);display:flex;align-items:center;gap:10px}
+.price-features li::before{content:'✓';color:var(--green);font-weight:700;font-size:.85rem}
+
+/* Testimonials */
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.testimonial{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;transition:all .3s}
+.testimonial:hover{transform:translateY(-4px);border-color:rgba(0,255,136,0.15)}
+.testimonial .stars{margin-bottom:16px;font-size:1rem}
+.testimonial p{color:var(--gray);font-size:.95rem;line-height:1.7;margin-bottom:20px;font-style:italic}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.author-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--cyan));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:#000}
+.author-info h4{font-size:.95rem;font-weight:600}
+.author-info span{font-size:.8rem;color:var(--gray2)}
+
+/* CTA */
+.cta{text-align:center;padding:100px 2rem;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(0,255,136,0.04),rgba(0,212,255,0.04));pointer-events:none}
+.cta h2{font-size:clamp(2rem,5vw,3rem);font-weight:900;margin-bottom:1rem}
+.cta p{color:var(--gray);max-width:500px;margin:0 auto 2rem;font-size:1.05rem}
+
+/* Footer */
+.footer{padding:60px 2rem 30px;border-top:1px solid var(--border);background:var(--bg2)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;max-width:1200px;margin:0 auto 3rem}
+.footer-brand h3{font-size:1.3rem;font-weight:800;margin-bottom:1rem;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.footer-brand p{color:var(--gray);font-size:.9rem;line-height:1.7;max-width:300px}
+.footer-col h4{font-size:.9rem;font-weight:700;margin-bottom:1rem;color:var(--gray2);text-transform:uppercase;letter-spacing:1px}
+.footer-col a{display:block;color:var(--gray);font-size:.9rem;padding:4px 0;transition:color .3s}
+.footer-col a:hover{color:var(--green)}
+.social-icons{display:flex;gap:12px;margin-top:1rem}
+.social-icon{width:38px;height:38px;border-radius:10px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .3s;color:var(--gray)}
+.social-icon:hover{border-color:var(--green);color:var(--green);transform:translateY(-2px)}
+.footer-bottom{text-align:center;padding-top:2rem;border-top:1px solid var(--border);color:var(--gray2);font-size:.85rem}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:2000;align-items:center;justify-content:center;animation:fadeInUp .2s}
+.modal-overlay.active{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;width:90%;max-width:440px;position:relative;animation:scaleIn .3s ease}
+.modal-close{position:absolute;top:16px;right:16px;background:none;color:var(--gray);font-size:1.5rem;transition:color .3s;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.modal-close:hover{color:var(--white);background:rgba(255,255,255,0.05)}
+.modal h2{font-size:1.5rem;font-weight:800;margin-bottom:.5rem}
+.modal .modal-sub{color:var(--gray);font-size:.9rem;margin-bottom:2rem}
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--gray);margin-bottom:6px}
+.form-group input{width:100%;padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--white);font-size:.95rem;outline:none;transition:all .3s;font-family:inherit}
+.form-group input:focus{border-color:var(--green);box-shadow:0 0 20px rgba(0,255,136,0.08)}
+.form-btn{width:100%;padding:14px;margin-top:.5rem;border-radius:var(--radius-sm);font-size:1rem;font-weight:700}
+.form-footer{text-align:center;margin-top:1.5rem;font-size:.9rem;color:var(--gray)}
+.form-footer a{color:var(--green);font-weight:600;cursor:pointer}
+.form-footer a:hover{text-decoration:underline}
+.form-error{color:#ff4444;font-size:.85rem;margin-top:8px;display:none}
+.form-success{color:var(--green);font-size:.85rem;margin-top:8px;display:none}
+
+/* Responsive */
+@media(max-width:900px){
+.nav-links{display:none}
+.hamburger{display:flex}
+.footer-grid{grid-template-columns:1fr 1fr}
+.agents-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+.hero{padding:130px 1.5rem 60px}
+.hero h1{font-size:2.2rem}
+.stats{gap:1.5rem}
+.stat-value{font-size:1.6rem}
+.footer-grid{grid-template-columns:1fr}
+.pricing-grid{grid-template-columns:1fr}
+.hero-actions{flex-direction:column;align-items:center}
+}
+
+/* Mobile nav */
+.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:1.5rem;z-index:999;animation:slideDown .3s ease}
+.mobile-menu.active{display:block}
+.mobile-menu a{display:block;padding:12px 0;color:var(--gray);font-weight:500;border-bottom:1px solid var(--border)}
+.mobile-menu a:hover{color:var(--green)}
+</style>
 </head>
-<body class="bg-gray-900 text-white">
-    <div class="container mx-auto p-4">
-        <h1 class="text-4xl font-bold text-primary">Agent Marketplace</h1>
+<body>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">
+    <div class="logo-icon">⚡</div>
+    <span>Million<span style="color:var(--green)">Agent</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="#agents">Marketplace</a>
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#testimonials">Reviews</a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn btn-ghost" onclick="openModal('login')">Login</button>
+    <button class="btn btn-primary" onclick="openModal('register')">Get Started</button>
+  </div>
+  <button class="hamburger" onclick="toggleMobile()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#agents" onclick="toggleMobile()">Marketplace</a>
+  <a href="#how" onclick="toggleMobile()">How It Works</a>
+  <a href="#pricing" onclick="toggleMobile()">Pricing</a>
+  <a href="#testimonials" onclick="toggleMobile()">Reviews</a>
+  <a href="#" onclick="toggleMobile();openModal('login')">Login</a>
+  <a href="#" onclick="toggleMobile();openModal('register')" style="color:var(--green)">Get Started</a>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span> AI-Powered Workforce — Now Live</div>
+  <h1>Hire AI Agents That<br><span class="gradient-text">Work 24/7</span></h1>
+  <p>Deploy intelligent AI agents for content, code, research, marketing, and support. Pay only for results. Scale infinitely.</p>
+  <div class="hero-actions">
+    <button class="btn btn-primary" onclick="openModal('register')">🚀 Get Started Free</button>
+    <button class="btn btn-ghost" onclick="document.getElementById('agents').scrollIntoView({behavior:'smooth'})">Browse Agents →</button>
+  </div>
+</section>
+
+<!-- Search -->
+<div class="search-section">
+  <div class="search-container">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search 500+ AI agents..." oninput="filterAgents()">
+  </div>
+</div>
+
+<!-- Stats -->
+<section class="stats">
+  <div class="stat"><div class="stat-value">4,000,000+</div><div class="stat-label">Tasks Completed</div></div>
+  <div class="stat"><div class="stat-value">500+</div><div class="stat-label">AI Agents</div></div>
+  <div class="stat"><div class="stat-value">10,000+</div><div class="stat-label">Happy Users</div></div>
+  <div class="stat"><div class="stat-value">99.9%</div><div class="stat-label">Uptime</div></div>
+</section>
+
+<!-- Agents -->
+<section class="section" id="agents">
+  <div class="container">
+    <div class="section-header">
+      <h2>Featured <span class="gradient-text">AI Agents</span></h2>
+      <p>Hand-picked intelligent agents ready to tackle your toughest tasks</p>
     </div>
+    <div class="categories">
+      <button class="cat-btn active" onclick="filterCategory('all')">All Agents</button>
+      <button class="cat-btn" onclick="filterCategory('content')">Content</button>
+      <button class="cat-btn" onclick="filterCategory('development')">Development</button>
+      <button class="cat-btn" onclick="filterCategory('marketing')">Marketing</button>
+      <button class="cat-btn" onclick="filterCategory('support')">Support</button>
+      <button class="cat-btn" onclick="filterCategory('research')">Research</button>
+      <button class="cat-btn" onclick="filterCategory('finance')">Finance</button>
+    </div>
+    <div class="agents-grid" id="agentsGrid">
+
+      <div class="agent-card" data-category="content" data-name="content writer" data-desc="professional blog posts articles seo copy marketing emails">
+        <div class="agent-card-header">
+          <div class="agent-icon">✍️</div>
+          <div class="agent-price">$0.10 <span>/task</span></div>
+        </div>
+        <h3>Content Writer</h3>
+        <p class="desc">Produces professional blog posts, articles, SEO copy, and marketing emails with natural language flow.</p>
+        <div class="agent-meta">
+          <div class="stars">★★★★★ <span style="color:var(--gray);font-size:.8rem">4.9</span></div>
+          <button class="hire-btn" onclick="hireAgent('Content Writer','$0.10/task')">Hire Now</button>
+        </div>
+      </div>
+
+      <div class="agent-card" data-category="development" data-name="code debugger" data-desc="identifies fixes bugs across python javascript typescript go rust">
+        <div class="agent-card-header">
+          <div class="agent-icon">🐛</div>
+          <div class="agent-price">$0.25 <span>/task</span></div>
+        </div>
+        <h3>Code Debugger</h3>
+        <p class="desc">Identifies and fixes bugs across Python, JavaScript, TypeScript, Go, and Rust with detailed explanations.</p>
+        <div class="agent-meta">
+          <div class="stars">★★★★★ <span style="color:var(--gray);font-size:.8rem">4.8</span></div>
+          <button class="hire-btn" onclick="hireAgent('Code Debugger','$0.25/task')">Hire Now</button>
+        </div>
+      </div>
+
+      <div class="agent-card" data-category="research" data-name="data analyst" data-desc="transforms raw data actionable insights visualizations statistical reports">
+        <div class="agent-card-header">
+          <div class="agent-icon">📊</div>
+          <div class="agent-price">$0.15 <span>/task</span></div>
+        </div>
+        <h3>Data Analyst</h3>
+        <p class="desc">Transforms raw data into actionable insights with visualizations, statistical analysis, and detailed reports.</p>
+        <div class="agent-meta">
+          <div class="stars">★★★★★ <span style="color:var(--gray);font-size:.8rem">4.9</span></div>
+          <button class="hire-btn" onclick="hireAgent('Data Analyst','$0.15/task')">Hire Now</button>
+        </div>
+      </div>
+
+      <div class="agent-card" data-category="marketing" data-name="social media manager" data-desc="creates scheduling engaging social content across platforms instagram tiktok twitter">
+        <div class="agent-card-header">
+          <div class="agent-icon">📱</div>
+          <div class="agent-price">$0.10 <span>/task</span></div>
+        </div>
+        <h3>Social Media Manager</h3>
+        <p class="desc">Creates and schedules engaging social content across Instagram, TikTok, Twitter/X, and LinkedIn.</p>
+        <div class="agent-meta">
+          <div class="stars">★★★★☆ <span style="color:var(--gray);font-size:.8rem">4.7</span></div>
+          <button class="hire-btn" onclick="hireAgent('Social Media Manager','$0.10/task')">Hire Now</button>
+        </div>
+      </div>
+
+      <div class="agent-card" data-category="support" data-name="customer support" data-desc="handles customer inquiries complaints tickets 24 7 multilingual empathetic">
+        <div class="agent-card-header">
+          <div class="agent-icon">💬</div>
+          <div class="agent-price">$0.05 <span>/task</span></div>
+        </div>
+        <h3>Customer Support</h3>
+        <p class="desc">Handles customer inquiries, complaints, and tickets 24/7 with multilingual, empathetic responses.</p>
+        <div class="agent-meta">
+          <div class="stars">★★★★★ <span style="color:var(--gray);font-size:.8rem">4.8</span></div>
+          <button class="hire-btn" onclick="hireAgent('Customer Support','$0.05/task')">Hire Now</button>
+        </div>
+      </div>
+
+      <div class="agent-card" data-category="research" data-name="research assistant" data-desc="deep research academic papers market analysis competitive intelligence summaries">
+        <div class="agent-card-header">
+          <div class="agent-icon">🔬</div>
+          <div class="agent-price">$0.20 <span>/task</span></div>
+        </div>
+        <h3>Research Assistant</h3>
+        <p class="desc">Deep research from academic papers to market analysis and competitive intelligence with cited summaries.</p>
+        <div class="agent-meta">
+          <div class="stars">★★★★★ <span style="color:var(--gray);font-size:.8rem">4.9</span></div>
+          <button class="hire-btn" onclick="hireAgent('Research Assistant','$0.20/task')">Hire Now</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" id="how" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-header">
+      <h2>How It <span class="gradient-text">Works</span></h2>
+      <p>Three simple steps to supercharge your productivity</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Browse Agents</h3>
+        <p>Explore our curated marketplace of 500+ specialized AI agents. Filter by category, rating, or price to find your perfect match.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Set Your Task</h3>
+        <p>Describe what you need in plain language. Upload files, set parameters, and define your quality expectations.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Get Results in Minutes</h3>
+        <p>Your AI agent works instantly. Review the output, request revisions, and only pay when satisfied.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <h2>Simple, Transparent <span class="gradient-text">Pricing</span></h2>
+      <p>Start free. Scale when ready. No hidden fees ever.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Pay Per Task</h3>
+        <div class="price">$0.10<span> /task</span></div>
+        <p class="price-desc">Perfect for trying out agents</p>
+        <ul class="price-features">
+          <li>Access to all 500+ agents</li>
+          <li>Pay only for what you use</li>
+          <li>No minimum commitment</li>
+          <li>Standard support</li>
+          <li>Results in minutes</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%" onclick="openModal('register')">Start Free</button>
+      </div>
+      <div class="price-card featured">
+        <h3>Monthly Pro</h3>
+        <div class="price">$99<span> /mo</span></div>
+        <p class="price-desc">For power users and teams</p>
+        <ul class="price-features">
+          <li>Unlimited task execution</li>
+          <li>Priority queue access</li>
+          <li>Advanced analytics dashboard</li>
+          <li>API access included</li>
+          <li>Priority 24/7 support</li>
+          <li>Team collaboration tools</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%" onclick="openModal('register')">Get Pro</button>
+      </div>
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price">$499<span> /mo</span></div>
+        <p class="price-desc">Dedicated agents for your org</p>
+        <ul class="price-features">
+          <li>Everything in Pro</li>
+          <li>Dedicated agent instances</li>
+          <li>Custom agent training</li>
+          <li>SLA guarantees (99.99%)</li>
+          <li>Dedicated account manager</li>
+          <li>On-premise deployment option</li>
+        </ul>
+        <button class="btn btn-cyan" style="width:100%" onclick="openModal('register')">Contact Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section" id="testimonials" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-header">
+      <h2>Trusted by <span class="gradient-text">Thousands</span></h2>
+      <p>See what our users are saying about Million Agent</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p>"The Content Writer agent saved our marketing team 40 hours per week. The quality is indistinguishable from our best human writers. Absolutely game-changing."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">SK</div>
+          <div class="author-info"><h4>Sarah Kim</h4><span>CMO, TechVentures Inc.</span></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p>"We deployed the Code Debugger across our entire engineering org. Bug resolution time dropped 70%. The ROI is insane — pays for itself in a single day."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">MR</div>
+          <div class="author-info"><h4>Marcus Rodriguez</h4><span>CTO, ScaleStack</span></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p>"Research Assistant gave us competitive intelligence that would have taken our analysts weeks. Got comprehensive market reports in under 10 minutes. Incredible."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">JP</div>
+          <div class="author-info"><h4>Julia Petrov</h4><span>VP Strategy, OmniCorp</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to <span class="gradient-text">10x Your Productivity</span>?</h2>
+  <p>Join 10,000+ users who are already leveraging AI agents to dominate their industry.</p>
+  <button class="btn btn-primary" style="padding:16px 40px;font-size:1.1rem" onclick="openModal('register')">🚀 Get Started — It's Free</button>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>⚡ Dollar Double Empire</h3>
+      <p>Building the future of AI-powered work. Million Agent is the world's premier marketplace for intelligent AI agents.</p>
+      <div class="social-icons">
+        <a href="#" class="social-icon" title="Twitter">𝕏</a>
+        <a href="#" class="social-icon" title="LinkedIn">in</a>
+        <a href="#" class="social-icon" title="GitHub">⌨</a>
+        <a href="#" class="social-icon" title="Discord">💬</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#agents">Marketplace</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#">API Docs</a>
+      <a href="#">Changelog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Policy</a>
+      <a href="#">Acceptable Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Dollar Double Empire. All rights reserved. Million Agent™ is a registered trademark.</p>
+  </div>
+</footer>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login')">&times;</button>
+    <h2>Welcome Back</h2>
+    <p class="modal-sub">Sign in to your Million Agent account</p>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="loginEmail">Email Address</label>
+        <input type="email" id="loginEmail" placeholder="you@company.com" required>
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+      </div>
+      <div class="form-error" id="loginError"></div>
+      <div class="form-success" id="loginSuccess"></div>
+      <button type="submit" class="btn btn-primary form-btn" id="loginBtn">Sign In</button>
+    </form>
+    <div class="form-footer">Don't have an account? <a onclick="switchModal('login','register')">Sign up free</a></div>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('register')">&times;</button>
+    <h2>Create Account</h2>
+    <p class="modal-sub">Join 10,000+ users on Million Agent</p>
+    <form id="registerForm" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label for="regName">Full Name</label>
+        <input type="text" id="regName" placeholder="John Doe" required>
+      </div>
+      <div class="form-group">
+        <label for="regEmail">Email Address</label>
+        <input type="email" id="regEmail" placeholder="you@company.com" required>
+      </div>
+      <div class="form-group">
+        <label for="regPassword">Password</label>
+        <input type="password" id="regPassword" placeholder="Min 8 characters" required minlength="8">
+      </div>
+      <div class="form-error" id="regError"></div>
+      <div class="form-success" id="regSuccess"></div>
+      <button type="submit" class="btn btn-primary form-btn" id="regBtn">Create Free Account</button>
+    </form>
+    <div class="form-footer">Already have an account? <a onclick="switchModal('register','login')">Sign in</a></div>
+  </div>
+</div>
+
+<script>
+/* ─── Nav Scroll ─── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50)
+})
+
+/* ─── Mobile Menu ─── */
+function toggleMobile(){
+  document.getElementById('mobileMenu').classList.toggle('active')
+}
+
+/* ─── Modals ─── */
+function openModal(type){
+  document.getElementById(type+'Modal').classList.add('active')
+  document.body.style.overflow='hidden'
+}
+function closeModal(type){
+  document.getElementById(type+'Modal').classList.remove('active')
+  document.body.style.overflow=''
+  // Reset forms
+  const form = document.getElementById(type==='login'?'loginForm':'registerForm')
+  if(form)form.reset()
+  hideMessages(type)
+}
+function switchModal(from,to){
+  closeModal(from)
+  setTimeout(()=>openModal(to),200)
+}
+function hideMessages(type){
+  const prefix = type==='login'?'login':'reg'
+  document.getElementById(prefix+'Error').style.display='none'
+  document.getElementById(prefix+'Success').style.display='none'
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{
+    if(e.target===o){o.classList.remove('active');document.body.style.overflow=''}
+  })
+})
+// Close on Escape
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-overlay.active').forEach(o=>{o.classList.remove('active')})
+    document.body.style.overflow=''
+  }
+})
+
+/* ─── Login ─── */
+async function handleLogin(e){
+  e.preventDefault()
+  const btn=document.getElementById('loginBtn')
+  const errEl=document.getElementById('loginError')
+  const sucEl=document.getElementById('loginSuccess')
+  errEl.style.display='none';sucEl.style.display='none'
+  btn.textContent='Signing in...';btn.disabled=true
+  try{
+    const res=await fetch('/marketplace/api/auth/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        email:document.getElementById('loginEmail').value,
+        password:document.getElementById('loginPassword').value
+      })
+    })
+    const data=await res.json()
+    if(res.ok){
+      sucEl.textContent='Login successful! Redirecting...';sucEl.style.display='block'
+      if(data.token)localStorage.setItem('ma_token',data.token)
+      setTimeout(()=>{closeModal('login');location.reload()},1500)
+    } else {
+      errEl.textContent=data.error||data.message||'Invalid credentials';errEl.style.display='block'
+    }
+  }catch(err){
+    errEl.textContent='Network error. Please try again.';errEl.style.display='block'
+  }
+  btn.textContent='Sign In';btn.disabled=false
+}
+
+/* ─── Register ─── */
+async function handleRegister(e){
+  e.preventDefault()
+  const btn=document.getElementById('regBtn')
+  const errEl=document.getElementById('regError')
+  const sucEl=document.getElementById('regSuccess')
+  errEl.style.display='none';sucEl.style.display='none'
+  btn.textContent='Creating account...';btn.disabled=true
+  try{
+    const res=await fetch('/marketplace/api/auth/register',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:document.getElementById('regName').value,
+        email:document.getElementById('regEmail').value,
+        password:document.getElementById('regPassword').value
+      })
+    })
+    const data=await res.json()
+    if(res.ok){
+      sucEl.textContent='Account created! Redirecting...';sucEl.style.display='block'
+      if(data.token)localStorage.setItem('ma_token',data.token)
+      setTimeout(()=>{closeModal('register');location.reload()},1500)
+    } else {
+      errEl.textContent=data.error||data.message||'Registration failed';errEl.style.display='block'
+    }
+  }catch(err){
+    errEl.textContent='Network error. Please try again.';errEl.style.display='block'
+  }
+  btn.textContent='Create Free Account';btn.disabled=false
+}
+
+/* ─── Category Filter ─── */
+function filterCategory(cat){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'))
+  event.target.classList.add('active')
+  const cards=document.querySelectorAll('.agent-card')
+  const search=document.getElementById('searchInput').value.toLowerCase()
+  cards.forEach(c=>{
+    const matchCat=cat==='all'||c.dataset.category===cat
+    const matchSearch=!search||c.dataset.name.includes(search)||c.dataset.desc.includes(search)
+    c.classList.toggle('hidden',!(matchCat&&matchSearch))
+  })
+}
+
+/* ─── Search Filter ─── */
+function filterAgents(){
+  const q=document.getElementById('searchInput').value.toLowerCase()
+  const activeCat=document.querySelector('.cat-btn.active')
+  const cat=activeCat?activeCat.textContent.toLowerCase().trim():'all agents'
+  const cards=document.querySelectorAll('.agent-card')
+  cards.forEach(c=>{
+    const matchSearch=!q||c.dataset.name.includes(q)||c.dataset.desc.includes(q)
+    const matchCat=cat==='all agents'||c.dataset.category===cat.replace(/s$/,'')||
+      (cat==='content'&&c.dataset.category==='content')||
+      (cat==='development'&&c.dataset.category==='development')||
+      (cat==='marketing'&&c.dataset.category==='marketing')||
+      (cat==='support'&&c.dataset.category==='support')||
+      (cat==='research'&&c.dataset.category==='research')||
+      (cat==='finance'&&c.dataset.category==='finance')
+    c.classList.toggle('hidden',!(matchSearch&&matchCat))
+  })
+}
+
+/* ─── Hire Agent ─── */
+function hireAgent(name,price){
+  const token=localStorage.getItem('ma_token')
+  if(!token){
+    if(confirm('You need an account to hire '+name+' ('+price+').\n\nSign up now?')){
+      openModal('register')
+    }
+    return
+  }
+  alert('🎉 '+name+' hired successfully!\nRate: '+price+'\n\nYour agent is being initialized...')
+}
+
+/* ─── Intersection Observer for animations ─── */
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.opacity='1';e.target.style.transform='translateY(0)'
+    }
+  })
+},{threshold:0.1})
+document.querySelectorAll('.agent-card,.step,.price-card,.testimonial,.stat').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(30px)';el.style.transition='all .6s ease'
+  observer.observe(el)
+})
+</script>
 </body>
 </html>
